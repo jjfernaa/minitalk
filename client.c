@@ -6,7 +6,7 @@
 /*   By: juan-jof <juan-jof@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 02:20:54 by juan-jof          #+#    #+#             */
-/*   Updated: 2025/04/26 03:03:08 by juan-jof         ###   ########.fr       */
+/*   Updated: 2025/04/27 23:24:11 by juan-jof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_atoi(const char *str)
 
 	result = 0;
 	sign = 1;
-	while(*str == ' ' || (*str >= 9 && *str <= 13))
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
 		str++;
 	if (*str == '-')
 		sign = -1;
@@ -33,6 +33,15 @@ int	ft_atoi(const char *str)
 	return (result * sign);
 }
 
+void	send_signal(int pid, int sig)
+{
+	if (kill(pid, sig) == -1)
+	{
+		ft_putstr_fd("Error: No se pudo enviar la señal\n", 2);
+		exit(EXIT_FAILURE);
+	}
+}
+
 void	send_char(int pid, char c)
 {
 	int	bit;
@@ -43,21 +52,9 @@ void	send_char(int pid, char c)
 	{
 		bit = (c >> i) & 1;
 		if (bit == 0)
-		{
-			if (kill(pid, SIGUSR1) == -1)
-			{
-				ft_putstr_fd("Error: No se pudo enviar la señal SIGUSR1\n", 2);
-				exit(EXIT_FAILURE);
-			}
-		}
+			send_signal(pid, SIGUSR1);
 		else
-		{
-			if (kill(pid, SIGUSR2) == -1)
-			{
-				ft_putstr_fd("Error : No se pudo enviar la señal SIGUSR2\n", 2);
-				exit(EXIT_FAILURE);
-			}
-		}
+			send_signal(pid, SIGUSR2);
 		usleep(100);
 		i--;
 	}
@@ -65,15 +62,14 @@ void	send_char(int pid, char c)
 
 int	main(int argc, char **argv)
 {
-	int pid;
-	int i;
+	int	pid;
+	int	i;
 
 	if (argc != 3)
 	{
 		ft_putstr_fd("Uso: ./client [PID del servido] [mensaje]\n", 2);
 		return (1);
 	}
-	
 	pid = ft_atoi(argv[1]);
 	if (pid <= 0)
 	{
@@ -86,7 +82,6 @@ int	main(int argc, char **argv)
 		send_char(pid, argv[2][i]);
 		i++;
 	}
-	
 	send_char(pid, '\n');
 	return (0);
 }

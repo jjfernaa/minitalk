@@ -6,7 +6,7 @@
 /*   By: juan-jof <juan-jof@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 01:55:50 by juan-jof          #+#    #+#             */
-/*   Updated: 2025/04/04 02:13:26 by juan-jof         ###   ########.fr       */
+/*   Updated: 2025/04/27 23:17:59 by juan-jof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,15 @@ void	ft_putchar_fd(char c, int fd)
 void	ft_putstr_fd(char *s, int fd)
 {
 	int	i;
-	
+
 	if (!s)
-		return;
+		return ;
 	i = 0;
 	while (s[i])
 	{
 		ft_putchar_fd(s[i], fd);
 		i++;
 	}
-	
 }
 
 void	ft_putnbr_fd(int n, int fd)
@@ -37,7 +36,7 @@ void	ft_putnbr_fd(int n, int fd)
 	if (n == -2147483648)
 	{
 		ft_putstr_fd("-2147483648", fd);
-		return;
+		return ;
 	}
 	if (n < 0)
 	{
