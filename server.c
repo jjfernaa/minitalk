@@ -6,17 +6,17 @@
 /*   By: juan-jof <juan-jof@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 02:21:14 by juan-jof          #+#    #+#             */
-/*   Updated: 2025/04/27 23:12:22 by juan-jof         ###   ########.fr       */
+/*   Updated: 2025/04/29 16:12:32 by juan-jof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static char	g_char = 0;
-static int	g_bit_count = 0;
-
 void	handle_signal(int signum)
 {
+	static char	g_char = 0;
+	static int	g_bit_count = 0;
+
 	if (signum == SIGUSR1)
 		g_char = g_char << 1;
 	else if (signum == SIGUSR2)
