@@ -6,16 +6,40 @@
 /*   By: juan-jof <juan-jof@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 02:21:14 by juan-jof          #+#    #+#             */
-/*   Updated: 2025/04/29 16:12:32 by juan-jof         ###   ########.fr       */
+/*   Updated: 2025/04/30 02:07:47 by juan-jof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
+void	process_char(char g_char, char *buffer, int *bufeer_index)
+{
+	if (g_char == '\0')
+	{
+		if (*bufeer_index > 0)
+		{
+			write (1, buffer, *bufeer_index);
+			write (1, "\n", 1);
+			*bufeer_index = 0;
+		}
+	}
+	else
+	{
+		buffer[(*bufeer_index)++] = g_char;
+		if (*bufeer_index >= 1023 || g_char == '\n')
+		{
+			write (1, buffer, *bufeer_index);
+			*bufeer_index = 0;
+		}
+	}
+}
+
 void	handle_signal(int signum)
 {
 	static char	g_char = 0;
 	static int	g_bit_count = 0;
+	static char	buffer[1024] = {0};
+	static int	buffer_index = 0;
 
 	if (signum == SIGUSR1)
 		g_char = g_char << 1;
@@ -24,7 +48,7 @@ void	handle_signal(int signum)
 	g_bit_count++;
 	if (g_bit_count == 8)
 	{
-		write(1, &g_char, 1);
+		process_char(g_char, buffer, &buffer_index);
 		g_char = 0;
 		g_bit_count = 0;
 	}
@@ -35,8 +59,10 @@ int	main(void)
 	struct sigaction	sa;
 
 	sa.sa_handler = &handle_signal;
-	sa.sa_flags = 0;
+	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
+	sigaddset(&sa.sa_mask, SIGUSR1);
+	sigaddset(&sa.sa_mask, SIGUSR2);
 	if (sigaction(SIGUSR1, &sa, NULL) == -1
 		|| sigaction(SIGUSR2, &sa, NULL) == -1)
 	{

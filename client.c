@@ -6,7 +6,7 @@
 /*   By: juan-jof <juan-jof@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 02:20:54 by juan-jof          #+#    #+#             */
-/*   Updated: 2025/04/29 16:25:39 by juan-jof         ###   ########.fr       */
+/*   Updated: 2025/04/30 01:44:04 by juan-jof         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	send_signal(int pid, int sig)
 		ft_putstr_fd("Error: No se pudo enviar la señal\n", 2);
 		exit(EXIT_FAILURE);
 	}
+	usleep(100);
 }
 
 void	send_char(int pid, char c)
@@ -55,7 +56,6 @@ void	send_char(int pid, char c)
 			send_signal(pid, SIGUSR1);
 		else
 			send_signal(pid, SIGUSR2);
-		usleep(600);
 		i--;
 	}
 }
@@ -73,7 +73,7 @@ int	main(int argc, char **argv)
 	pid = ft_atoi(argv[1]);
 	if (pid <= 0)
 	{
-		ft_putstr_fd("Error_ PID invalido\n", 2);
+		ft_putstr_fd("Error: PID invalido\n", 2);
 		return (1);
 	}
 	i = 0;
@@ -82,7 +82,6 @@ int	main(int argc, char **argv)
 		send_char(pid, argv[2][i]);
 		i++;
 	}
-	send_char(pid, argv[2][i]);
-	send_char(pid, '\n');
+	send_char(pid, '\0');
 	return (0);
 }
